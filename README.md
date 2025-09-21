@@ -8,7 +8,15 @@ This project explores the possibilities of LLM-driven generation approach for ge
 
 > **Please Note!**
 >
-> Make sure you are supporting CUDA. Otherwise, this code won't work.
+> Make sure your machine supports CUDA for faster inference.
+> To use CUDA with a compatible GPU, you need to install torch as shown [here](https://pytorch.org/get-started/locally/).
+> Then add this single line inside `requirements.txt` (except for the substring 'pip3 install').
+>
+> However, if using CUDA is not an option, you can make inference using CPU instead, by changing the [following line]() into:
+> ```python
+> pipeline.to("cpu")
+> ```
+
 
 In order to execute the code, you need to go through the following steps:
 
@@ -17,22 +25,7 @@ In order to execute the code, you need to go through the following steps:
     git clone https://github.com/sandangl/eustachian_monument.git
     ```
 * Create a Python Virtual Environment:
-    - By using venv:
-        ```bash
-        python -m venv eustachian_monument/venv
-        ```
-        and then activating the environment.
-        On Linux/MacOS:
-        ```bash
-        source eustachian_monument/venv/bin/activate
-        ```
-        On Windows:
-        ```cmd
-        eustachian_monument/venv/bin/activate.bat
-        ```
-    - By using Anaconda:
-        ```bash
-        conda create --name eus_mon
-        ```
+    We recommend using **conda** for best results.
+    You can set your environment with conda by executing the script: `environment_setup.sh`.
 * Install [Ollama](https://ollama.com/), which is needed for using vision models.
 * You're done! Open the `image_reconstruction_pipeline.ipynb` notebook for a fast demonstration.
