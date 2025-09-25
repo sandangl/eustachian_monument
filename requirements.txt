@@ -2,3 +2,6 @@ matplotlib
 ollama
 chromadb
 ipywidgets
+pillow
+transformers
+accelerate
