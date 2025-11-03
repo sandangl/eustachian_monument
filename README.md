@@ -12,7 +12,7 @@ This project explores the possibilities of LLM-driven generation approach for ge
 > To use CUDA with a compatible GPU, you need to install torch as shown [here](https://pytorch.org/get-started/locally/).
 > Then add this single line inside `requirements.txt` (except for the substring 'pip3 install').
 >
-> However, if using CUDA is not an option, you can make inference using CPU instead, by changing the [following line]() into:
+> However, if using CUDA is not an option, you can make inference using the CPU instead, by changing the [following line](image_reconstruction_pipeline.ipynb) into:
 > ```python
 > pipeline.to("cpu")
 > ```
@@ -29,3 +29,11 @@ In order to execute the code, you need to go through the following steps:
     You can set your environment with conda by executing the script: `environment_setup.sh`.
 * Install [Ollama](https://ollama.com/), which is needed for using vision models.
 * You're done! Open the `image_reconstruction_pipeline.ipynb` notebook for a fast demonstration.
+
+
+## System Requirements
+
+Our solution needs *a lot* of space in order to host all the needed models, so be sure you have at least **25 GB** of free memory.
+
+
+An NVIDIA GPU is not strictly needed, as inference could be made through CPU as well, yet still desirable, as it dramatically decreases image generation time.
