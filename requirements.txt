@@ -5,3 +5,4 @@ ipywidgets
 pillow
 transformers
 accelerate
+jsonline
