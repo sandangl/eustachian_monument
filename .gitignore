@@ -3,4 +3,4 @@ System Volume Information
 venv/
 examples*/
 models/
-output_edit.jpeg
+output_edit*
