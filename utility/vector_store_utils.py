@@ -5,7 +5,7 @@ class VectorStoreUtils:
 
     def __init__(self):
         self.chromaClient = chromadb.EphemeralClient() 
-        self.collection = chroma_client.create_collection(name="eustachian_collection")
+        self.collection = self.chromaClient.create_collection(name="eustachian_collection")
         self.lastId = 0
         
     def addToCollection(self, documents: List): 
