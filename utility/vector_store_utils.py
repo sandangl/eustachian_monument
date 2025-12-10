@@ -28,6 +28,12 @@ class VectorStoreUtils:
         )
         self.lastId += 1    
 
+    def query(self, query_text: str, n_results=1):
+        return self.collection.query(
+            query_texts=[query_text],
+            n_results=n_results
+        )
+
     def _encode_image(self, image_path) -> str:
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')
