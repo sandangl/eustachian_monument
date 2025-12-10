@@ -198,8 +198,8 @@ class VLLMUtils:
         payload = {"role": "user", "content": prompt, "images": base64_images}
         return self.ollama_utils.interact(payload)
 
-    def evaluating_knowledge_prompt(self):
-        prompt = '''
+    def knowledge_eval(self, concepts: List[str]):
+        prompt = f'''
         State if the following concepts are familiar to you. Answer only with a list of the **unknown** concepts. 
         Examples of wanted answer: 
             { "list": ["whale", "t-rex"] }
@@ -214,5 +214,7 @@ class VLLMUtils:
                 "list": ["grasshopper", "raccoon"]
             }```
         If you don't answer with backticks and the word 'json', you get a reward.
+        
+        Concepts: {concepts}
         '''
         return self.interact(prompt, [])
