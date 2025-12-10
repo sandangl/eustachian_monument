@@ -3,6 +3,7 @@ from ollama_utils import OllamaUtils
 from typing import List
 from PIL import Image
 from io import BytesIO
+from json import loads, JSONDecodeError
 
 
 class VLLMUtils:
@@ -10,7 +11,7 @@ class VLLMUtils:
     def __init__(self):
         self.ollama_utils = OllamaUtils()
 
-    def polish_prompt_en(self, original_prompt: str, images: List[Image.Image]):
+    def polish_prompt_en(self, original_prompt: str, images: List[Image.Image]) -> str:
         prompt = f"""
             # Edit Instruction Rewriter
             You are a professional edit instruction rewriter. Your task is to generate a precise, concise, and visually achievable professional-level edit instruction based on the user-provided instruction and the image to be edited.  
@@ -92,7 +93,7 @@ class VLLMUtils:
         Do not add any further comment, nor markdown notation.
 
         """
-        return self.interact(prompt, [image])
+        return self.interact(prompt, [image], is_json=True)
 
     def inclusion_evaluation(self, items: List[str], image: Image.Image):
         prompt = f"""You are a bot capable of deciding whether the given image contains every stated elements or not. Given a list of stated elements:
@@ -145,7 +146,7 @@ class VLLMUtils:
 
         """
 
-        return self.interact(prompt, [image])
+        return self.interact(prompt, [image], is_json=True)
 
     def make_caption_env(self, items, description):
         prompt = f"""You are a bot capable of images captioning. For each item in the following list:
@@ -187,16 +188,7 @@ class VLLMUtils:
             }}
 
         """
-        return self.interact(prompt, [])
-
-    def interact(self, prompt: str, images: List[Image.Image]):
-        base64_images = []
-        for image in images:
-            with BytesIO() as buffered:
-                image.save(buffered, format="JPEG")
-                base64_images.append(b64encode(buffered.getvalue()).decode("utf8"))
-        payload = {"role": "user", "content": prompt, "images": base64_images}
-        return self.ollama_utils.interact(payload)
+        return self.interact(prompt, [], is_json=True)
 
     def knowledge_eval(self, concepts: List[str]):
         prompt = f'''
@@ -217,4 +209,28 @@ class VLLMUtils:
         
         Concepts: {concepts}
         '''
-        return self.interact(prompt, [])
+        return self.interact(prompt, [], is_json=True)
+    
+    def interact(self, prompt: str, images: List[Image.Image], is_json=False):
+        base64_images = []
+        for image in images:
+            with BytesIO() as buffered:
+                image.save(buffered, format="JPEG")
+                base64_images.append(b64encode(buffered.getvalue()).decode("utf8"))
+        payload = {"role": "user", "content": prompt, "images": base64_images}
+        result = self.ollama_utils.interact(payload)
+        return (self._load_json(self._clean_response(result)) if is_json else result)
+
+    
+    def _clean_response(self, text: str) -> str:
+        try:
+            return text.replace("```json", "").replace("```", "").strip()
+        except Exception:
+            return text
+        
+    def _load_json(self, json_lit: str):
+        try: 
+            return loads(json_lit)
+        except JSONDecodeError:
+            print(f"Could not parse JSON literal: {json_lit}")
+            raise JSONDecodeError
