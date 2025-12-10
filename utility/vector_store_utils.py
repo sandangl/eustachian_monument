@@ -29,7 +29,11 @@ class VectorStoreUtils:
         )
         self.lastId += 1    
 
-    def query(self, query_text: str, n_results=1) -> Image.Image:
+    def query(self, queries: List[str], n_results=1) -> List[Image.Image]:
+        results = [self._single_query(q, n_results) for q in queries]
+        return results
+    
+    def _single_query(self, query_text: str, n_results: int) -> Image.Image:
         result = self.collection.query(
             query_texts=[query_text],
             n_results=n_results
