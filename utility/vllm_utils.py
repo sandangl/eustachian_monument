@@ -197,3 +197,22 @@ class VLLMUtils:
                 base64_images.append(b64encode(buffered.getvalue()).decode("utf8"))
         payload = {"role": "user", "content": prompt, "images": base64_images}
         return self.ollama_utils.interact(payload)
+
+    def evaluating_knowledge_prompt(self):
+        prompt = '''
+        State if the following concepts are familiar to you. Answer only with a list of the **unknown** concepts. 
+        Examples of wanted answer: 
+            { "list": ["whale", "t-rex"] }
+            { "list": [] }
+        Example of **unwanted** answers: 
+            ```json
+            {
+                "list": []
+            }```
+            ```json
+            {  
+                "list": ["grasshopper", "raccoon"]
+            }```
+        If you don't answer with backticks and the word 'json', you get a reward.
+        '''
+        return self.interact(prompt, [])
