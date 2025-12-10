@@ -1,6 +1,7 @@
 import chromadb
 import base64
 import io
+import json
 from PIL import Image
 from matplotlib import image as mpimg
 from typing import List
@@ -28,18 +29,19 @@ class VectorStoreUtils:
         )
         self.lastId += 1    
 
-    def query(self, query_text: str, n_results=1):
-        return self.collection.query(
+    def query(self, query_text: str, n_results=1) -> Image.Image:
+        result = self.collection.query(
             query_texts=[query_text],
             n_results=n_results
         )
+        enc_retrieved = json.loads(result['documents'][0][0].replace("'", '"'))['base64']
+        return self._decode_image(enc_retrieved)
 
     def _encode_image(self, image_path) -> str:
         with open(image_path, "rb") as image_file:
             return base64.b64encode(image_file.read()).decode('utf-8')
     
-    def _decode_image(self, base64_img, img_format: str) -> Image.Image:
-        decoded_bytes = io.BytesIO(base64.b64decode(base64_img))
-        decoded_image = mpimg.imread(decoded_bytes, format=img_format)
-
-        return Image.fromarray(decoded_image)
+    def _decode_image(self, base64_img) -> Image.Image:
+        dec_img = base64.b64decode(base64_img)
+        bytez = io.BytesIO(dec_img)
+        return Image.open(bytez)
