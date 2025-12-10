@@ -9,9 +9,9 @@ from vllm_utils import VLLMUtils
 class ImageLLMUtils:
 
     def __init__(self):
-        mode = dotenv_values("../.env")["INFERENCE_MODE"]
-        precision = torch.bfloat16 if mode == "cuda" else torch.float32
-        vllm = VLLMUtils()
+        self.mode = dotenv_values("../.env")["INFERENCE_MODE"]
+        self.precision = torch.bfloat16 if self.mode == "cuda" else torch.float32
+        self.vllm = VLLMUtils()
 
     def pipeline_init(self) -> None:
         pipeline = QwenImageEditPlusPipeline.from_pretrained(

@@ -8,7 +8,7 @@ from io import BytesIO
 class VLLMUtils:
 
     def __init__(self):
-        ollama_utils = OllamaUtils()
+        self.ollama_utils = OllamaUtils()
 
     def polish_prompt_en(self, original_prompt: str, images: List[Image.Image]):
         prompt = f"""
@@ -141,11 +141,11 @@ class VLLMUtils:
         {{
             "response": false,
             "missing": ["A lighthouse"]
-        }}
+            }}
 
         """
 
-        return self.interact(self, prompt, [image])
+        return self.interact(prompt, [image])
 
     def make_caption_env(self, items, description):
         prompt = f"""You are a bot capable of images captioning. For each item in the following list:
@@ -184,10 +184,10 @@ class VLLMUtils:
         {{
             "response": false,
             "missing": ["A lighthouse"]
-        }}
+            }}
 
         """
-        return self.interact(self, prompt)
+        return self.interact(prompt, [])
 
     def interact(self, prompt: str, images: List[Image.Image]):
         base64_images = []

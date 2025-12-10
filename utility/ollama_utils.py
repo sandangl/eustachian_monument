@@ -8,8 +8,8 @@ from ollama import ChatResponse, chat
 class OllamaUtils:
 
     def __init__(self):
-        model = dotenv_values("../.env")["MODEL"]
-        ollama_url = dotenv_values("../.env")["OLLAMA_URL"]
+        self.model = dotenv_values("../.env")["MODEL"]
+        self.ollama_url = dotenv_values("../.env")["OLLAMA_URL"]
 
     def ollama_init(self):
         os.system(f"ollama pull {self.model}")
