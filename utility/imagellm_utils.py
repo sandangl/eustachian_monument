@@ -1,6 +1,6 @@
 from diffusers import QwenImageEditPlusPipeline
 from dotenv import dotenv_values
-from typing import List, Dict
+from typing import List, Dict, Union
 from PIL import Image
 import os
 import torch
@@ -34,7 +34,7 @@ class ImageLLMUtils:
         gen_images=1,
         output_filename="output_edit",
         persist=True
-    ) -> List[Image.Image]:
+    ) -> Union[Image.Image, List[Image.Image]]:
         polished_prompt = self.vllm.polish_prompt_en(prompt, images)
         inputs = self._make_inputs(
             images, polished_prompt, guidance, neg_prompt, inf_steps, gen_images
@@ -53,13 +53,13 @@ class ImageLLMUtils:
         gen_images=1,
         output_filename="output_edit",
         persist=True,
-    ) -> List[Image.Image]:
+    ) -> Union[Image.Image, List[Image.Image]]:
         unknown_concepts = self.vllm.knowledge_eval(concepts=concepts)
         retrieved = vectorStore.query(unknown_concepts)
 
         result = self.generate(
             prompt,
-            images.append(retrieved),
+            images + [retrieved] if not isinstance(retrieved, list) else images + retrieved,
             guidance=guidance,
             neg_prompt=neg_prompt,
             inf_steps=inf_steps,
@@ -74,7 +74,7 @@ class ImageLLMUtils:
             retrieved = vectorStore.query(missing)
             result = self.generate(
                 prompt,
-                images.append(retrieved),
+                images + [retrieved] if not isinstance(retrieved, list) else images + retrieved,
                 guidance=guidance,
                 neg_prompt=neg_prompt,
                 inf_steps=inf_steps,
@@ -84,7 +84,7 @@ class ImageLLMUtils:
             )
             return result
 
-    def _generate_image(self, inputs: Dict, output_filename, persist=True) -> List[Image.Image]:
+    def _generate_image(self, inputs: Dict, output_filename, persist=True) -> Union[Image.Image, List[Image.Image]]:
         with torch.inference_mode():
             output = self.pipeline(**inputs)
             i = 0
@@ -93,7 +93,7 @@ class ImageLLMUtils:
                     output_image.save(f"{output_filename}_{i}.jpeg")
                     i += 1
                 print("Image generated (saved!)")
-        return output.images
+        return (output.images[0] if len(output.images) == 1 else output.images)
 
     def _make_inputs(
         self,
