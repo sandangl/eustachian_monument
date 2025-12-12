@@ -194,17 +194,17 @@ class VLLMUtils:
         prompt = f'''
         State if the following concepts are familiar to you. Answer only with a list of the **unknown** concepts. 
         Examples of wanted answer: 
-            { "list": ["whale", "t-rex"] }
-            { "list": [] }
+            {{ "list": ["whale", "t-rex"] }}
+            {{ "list": [] }}
         Example of **unwanted** answers: 
             ```json
-            {
+            {{
                 "list": []
-            }```
+            }}```
             ```json
-            {  
+            {{ 
                 "list": ["grasshopper", "raccoon"]
-            }```
+            }}```
         If you don't answer with backticks and the word 'json', you get a reward.
         
         Concepts: {concepts}
