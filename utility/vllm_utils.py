@@ -1,5 +1,5 @@
 from base64 import b64encode
-from ollama_utils import OllamaUtils
+from utility.ollama_utils import OllamaUtils
 from typing import List
 from PIL import Image
 from io import BytesIO
@@ -218,7 +218,7 @@ class VLLMUtils:
                 image.save(buffered, format="JPEG")
                 base64_images.append(b64encode(buffered.getvalue()).decode("utf8"))
         payload = {"role": "user", "content": prompt, "images": base64_images}
-        result = self.ollama_utils.interact(payload)
+        result = self.ollama_utils.interact([payload])
         return (self._load_json(self._clean_response(result)) if is_json else result)
 
     

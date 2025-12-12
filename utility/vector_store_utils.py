@@ -17,12 +17,12 @@ class VectorStoreUtils:
         for i in documents:
          entry =  f"""
         {{ 
-            "caption": "{i.caption}",
-            "base64": "{self._encodeImage(f'{i.image}')}"
+            "caption": "{i['caption']}",
+            "base64": "{self._encode_image(i['base64'])}"
         }}
         """
         self.collection.add(
-           ids = [self.lastId],
+           ids = [str(self.lastId)],
            documents = [
               entry 
            ]

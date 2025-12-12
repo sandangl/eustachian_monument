@@ -2,14 +2,16 @@ from diffusers import QwenImageEditPlusPipeline
 from dotenv import dotenv_values
 from typing import List, Dict
 from PIL import Image
+import os
 import torch
-from vllm_utils import VLLMUtils
-from vector_store_utils import VectorStoreUtils
+from utility.vllm_utils import VLLMUtils
+from utility.vector_store_utils import VectorStoreUtils
 
 
 class ImageLLMUtils:
     def __init__(self):
-        self.mode = dotenv_values("../.env")["INFERENCE_MODE"]
+        env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.env")
+        self.mode = dotenv_values(env_path)["INFERENCE_MODE"]
         self.precision = torch.bfloat16 if self.mode == "cuda" else torch.float32
         self.vllm = VLLMUtils()
 
