@@ -54,27 +54,27 @@ class ImageLLMUtils:
         output_filename="output_edit",
         persist=True,
     ) -> Union[Image.Image, List[Image.Image]]:
-        unknown_concepts = self.vllm.knowledge_eval(concepts=concepts)
-        retrieved = vectorStore.query(unknown_concepts)
+        retrieved = vectorStore.query(concepts, n_results=1)
 
         result = self.generate(
             prompt,
-            images + [retrieved] if not isinstance(retrieved, list) else images + retrieved,
+            images + [r['img'] for r in retrieved],
             guidance=guidance,
             neg_prompt=neg_prompt,
             inf_steps=inf_steps,
             gen_images=gen_images,
-            persist=False
+            output_filename=output_filename,
+            persist=True
         )
 
-        missing = self.vllm.inclusion_evaluation(concepts, result)
+        missing = self.vllm.inclusion_evaluation(concepts, [result] if not isinstance(result, list) else result)
         if len(missing["missing"]) == 0:
             return result
         else:
-            retrieved = vectorStore.query(missing)
+            retrieved = vectorStore.query(concepts, n_results= 5)
             result = self.generate(
                 prompt,
-                images + [retrieved] if not isinstance(retrieved, list) else images + retrieved,
+                images + [retrieved],
                 guidance=guidance,
                 neg_prompt=neg_prompt,
                 inf_steps=inf_steps,

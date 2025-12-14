@@ -4,12 +4,13 @@ import io
 import json
 from PIL import Image
 from matplotlib import image as mpimg
-from typing import List
+from typing import List, Dict
 
 class VectorStoreUtils: 
 
     def __init__(self):
         self.chromaClient = chromadb.EphemeralClient() 
+        self.vllm = None
         self.collection = self.chromaClient.create_collection(name="eustachian_collection")
         self.lastId = 0
         
@@ -29,8 +30,9 @@ class VectorStoreUtils:
         )
         self.lastId += 1    
 
-    def query(self, queries: List[str], n_results=1) -> List[Image.Image]:
+    def query(self, queries: List[str], n_results=5) -> Dict:
         results = [self._single_query(q, n_results) for q in queries]
+
         return results
     
     def _single_query(self, query_text: str, n_results: int) -> Image.Image:
@@ -39,7 +41,8 @@ class VectorStoreUtils:
             n_results=n_results
         )
         enc_retrieved = json.loads(result['documents'][0][0].replace("'", '"'))['base64']
-        return self._decode_image(enc_retrieved)
+        cap_retrieved = json.loads(result['documents'][0][0].replace("'", '"'))['caption']
+        return {'img': self._decode_image(enc_retrieved), 'cap': cap_retrieved}
 
     def _encode_image(self, image_path) -> str:
         with open(image_path, "rb") as image_file:

@@ -95,7 +95,7 @@ class VLLMUtils:
         """
         return self.interact(prompt, [image], is_json=True)
 
-    def inclusion_evaluation(self, items: List[str], image: Image.Image):
+    def inclusion_evaluation(self, items: List[str], images: List[Image.Image]):
         prompt = f"""You are a bot capable of deciding whether the given image contains every stated elements or not. Given a list of stated elements:
 
         {items}
@@ -146,7 +146,7 @@ class VLLMUtils:
 
         """
 
-        return self.interact(prompt, [image], is_json=True)
+        return self.interact(prompt, images, is_json=True)
 
     def make_caption_env(self, items, description):
         prompt = f"""You are a bot capable of images captioning. For each item in the following list:
