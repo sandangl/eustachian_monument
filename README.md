@@ -12,10 +12,7 @@ This project explores the possibilities of LLM-driven generation approach for ge
 > To use CUDA with a compatible GPU, you need to install torch as shown [here](https://pytorch.org/get-started/locally/).
 > Then add this single line inside `requirements.txt` (except for the substring 'pip3 install').
 >
-> However, if using CUDA is not an option, you can make inference using the CPU instead, by changing the [following line](image_reconstruction_pipeline.ipynb) into:
-> ```python
-> pipeline.to("cpu")
-> ```
+> However, if using CUDA is not an option, you can make inference using the CPU instead, by changing the configuration inside the [.env file](.env), by setting `INFERENCE_MODE=cpu`.
 
 
 In order to execute the code, you need to go through the following steps:
